@@ -13,6 +13,9 @@
 
     "jsList" : [
         "src/resource.js",
-        "src/GameLayer.js"
+        "src/GameLayer.js",
+        "src/BG.js",
+        "src/Enemy.js",
+        "src/Player.js"
     ]
 }

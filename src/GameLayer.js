@@ -4,6 +4,7 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.bg );
         this.bg.setPosition( new cc.Point( screenWidth / 2 , screenHeight / 2 ) );
         this.states = GameLayer.STATES.FRONT;
+        this.addKeyboardHandlers();
         this.scheduleUpdate();
         
 	return true;
@@ -27,7 +28,7 @@ var GameLayer = cc.LayerColor.extend({
     createPlayer: function (){
         this.player = new Player ();
         this.addChild( this.player , 1 );
-        this.player.setPosition( new cc.Point( screenWidth / 2 , 80 ) );
+        this.player.setPosition( new cc.Point( screenWidth / 2 , 70 ) );
         this.player.scheduleUpdate();
     },
         
@@ -36,6 +37,32 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemy , 2 );
         this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 135 ) );
         this.enemy.scheduleUpdate();
+    },
+    
+    addKeyboardHandlers: function() {
+        var self = this;
+        cc.eventManager.addListener({
+            event: cc.EventListener.KEYBOARD,
+            onKeyPressed : function( keyCode, event ) {
+                self.onKeyDown( keyCode, event );
+            },
+            onKeyReleased: function( keyCode, event ) {
+                self.onKeyUp( keyCode, event );
+            }
+        }, this);
+    },
+    
+    onKeyDown: function( keyCode, event ) {
+        if ( keyCode == 37 )
+            this.player.moveLeft();
+        else if ( keyCode == 39)
+            this.player.moveRight();
+        else if ( keyCode == 32)
+            this.player.jump();
+    },
+    
+    onKeyUp: function( keyCode, event ) {
+
     }
 })
 

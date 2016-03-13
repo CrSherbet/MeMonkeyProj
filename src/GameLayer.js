@@ -15,6 +15,7 @@ var GameLayer = cc.LayerColor.extend({
             this.states = GameLayer.STATES.STARTED;
             this.gameStart();
         }
+        this.keepBullet();
         this.player.scheduleUpdate();
         this.enemy.scheduleUpdate();
     },
@@ -23,6 +24,7 @@ var GameLayer = cc.LayerColor.extend({
         this.states = GameLayer.STATES.STARTED;
         this.createPlayer();
         this.createEnemy();
+        this.createBullet();
     },
         
     createPlayer: function (){
@@ -37,6 +39,18 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemy , 2 );
         this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 135 ) );
         this.enemy.scheduleUpdate();
+    },
+    
+    createBullet: function(){
+        this.bullet = new Bullet();
+        this.addChild( this.bullet );
+        this.bullet.randomPos();
+        this.bullet.scheduleUpdate();
+    },
+    
+    keepBullet: function(){
+        if ( this.bullet.closeTo( this.player ))
+            this.bullet.randomPos();
     },
     
     addKeyboardHandlers: function() {

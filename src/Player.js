@@ -10,7 +10,7 @@ var Player = cc.Sprite.extend({
         this.setPosition( new cc.Point( pos.x , pos.y + this.velocity ) );
         if( pos.y > 100)
             this.velocity += Player.G ;
-        else if( pos.y < 100 || pos.y == 100){
+        else if( pos.y <= 100 ){
             this.velocity = 0 ;
             pos.y = 100 ;
         }

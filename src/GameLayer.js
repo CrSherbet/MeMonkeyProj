@@ -18,13 +18,28 @@ var GameLayer = cc.LayerColor.extend({
         this.keepBullet();
         this.player.scheduleUpdate();
         this.enemy.scheduleUpdate();
-    },
+        this.banana.scheduleUpdate();
+        this.excrement.scheduleUpdate();
         
+        this.checkCollision();
+       
+            
+    },
+    
+    checkCollision: function(){
+        if ( this.banana.checkCollision() )
+            this.banana.leaveBanana( this.enemy );
+        if ( this.excrement.checkCollision() )
+            this.excrement.leaveExcrement( this.enemy );
+    },
+    
     gameStart: function(){
         this.states = GameLayer.STATES.STARTED;
         this.createPlayer();
         this.createEnemy();
         this.createBullet();
+        this.createBanana();
+        this.createExcrement();
     },
         
     createPlayer: function (){
@@ -46,6 +61,20 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.bullet );
         this.bullet.randomPos();
         this.bullet.scheduleUpdate();
+    },
+    
+    createBanana: function(){
+        this.banana = new Banana();
+        this.addChild( this.banana );
+        this.banana.setPosition( new cc.Point( screenWidth - 50 , screenHeight ));
+        this.banana.scheduleUpdate();
+    },
+    
+    createExcrement: function(){
+        this.excrement = new Excrement();
+        this.addChild( this.excrement );
+        this.excrement.setPosition( new cc.Point( screenWidth - 50 , screenHeight ));
+        this.excrement.scheduleUpdate();
     },
     
     keepBullet: function(){

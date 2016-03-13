@@ -17,12 +17,12 @@ var Player = cc.Sprite.extend({
     },
     moveRight: function(){
         var pos = this.getPosition();
-        this.setPosition( new cc.Point( pos.x + 8 , pos.y ) );
+        this.setPosition( new cc.Point( pos.x + 10 , pos.y ) );
     },
     
     moveLeft: function(){
         var pos = this.getPosition();
-        this.setPosition( new cc.Point( pos.x - 8 , pos.y ) );
+        this.setPosition( new cc.Point( pos.x - 10 , pos.y ) );
     },
     
     jump: function(){

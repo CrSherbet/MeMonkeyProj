@@ -19,6 +19,6 @@ var Enemy = cc.Sprite.extend({
 });
 
 Enemy.DIRECTION = {
-    LEFT : -5 ,
-    RIGHT :  5
+    LEFT : -3 ,
+    RIGHT :  3
 };

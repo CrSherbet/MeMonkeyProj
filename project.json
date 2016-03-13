@@ -17,6 +17,8 @@
         "src/BG.js",
         "src/Enemy.js",
         "src/Player.js",
-        "src/Bullet.js"
+        "src/Bullet.js",
+        "src/Banana.js",
+        "src/Excrement.js"
     ]
 }

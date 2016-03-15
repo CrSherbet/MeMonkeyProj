@@ -6,7 +6,7 @@ var Bullet = cc.Sprite.extend({
     
     randomPos: function(){
         var x = Math.random() * 700 ;
-        var y = Math.random() * 300 ;
+        var y = Math.random() * 280 ;
         this.setPosition( new cc.Point( x + 70 , y + 70 ));
     },
     

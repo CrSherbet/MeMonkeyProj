@@ -2,33 +2,55 @@ var Player = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/tiger.png' );
-        this.velocity = 0;
+        this.dirMove = "" ;
+        this.xVelocity = 0;
+        this.yVelocity = 0;
     },
     
     update: function( dt ){
         var pos = this.getPosition();
-        this.setPosition( new cc.Point( pos.x , pos.y + this.velocity ) );
-        if( pos.y > 100)
-            this.velocity += Player.G ;
-        else if( pos.y <= 100 ){
-            this.velocity = 0 ;
-            pos.y = 100 ;
-        }
+        this.calGavity();
+        this.calFiction();
+        this.setPosition( new cc.Point( pos.x + this.xVelocity , pos.y + this.yVelocity ) );
+       
     },
-    moveRight: function(){
+    
+    calGavity: function (){
         var pos = this.getPosition();
-        this.setPosition( new cc.Point( pos.x + 10 , pos.y ) );
+        if( pos.y + this.yVelocity > 70 )
+            this.yVelocity += Player.G ;
+        else 
+            this.yVelocity = 0;
+    },
+    
+    calFiction: function (){
+        var pos = this.getPosition();
+        if (this.dirMove ==  "right" && this.xVelocity > 0)
+            this.xVelocity -= 0.25 ;
+        else if (this.dirMove ==  "left" && this.xVelocity < 0)
+            this.xVelocity += 0.25 ;
+        if( pos.x + this.xVelocity > screenWidth - 50  || pos.x + this.xVelocity < 50 )
+            this.xVelocity = 0;
+    },
+    
+    moveRight: function(){
+        this.xVelocity = Player.MOVE_RIGHT;
+        this.dirMove = "right";
     },
     
     moveLeft: function(){
-        var pos = this.getPosition();
-        this.setPosition( new cc.Point( pos.x - 10 , pos.y ) );
+        this.xVelocity = Player.MOVE_LEFT ;
+        this.dirMove = "left";
     },
     
     jump: function(){
-        this.velocity = Player.JUMP_VELOCITY ;
+        if ( this.getPositionY() <= 250 && this.getPositionY() >= 70 ){
+             this.yVelocity = Player.JUMP_VELOCITY ; 
+        }
     }
 });
 
 Player.G = -1 ;
-Player.JUMP_VELOCITY = 250 ;
+Player.JUMP_VELOCITY = 15 ;
+Player.MOVE_RIGHT = 10 ;
+Player.MOVE_LEFT = -10 ;

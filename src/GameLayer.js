@@ -40,6 +40,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createBullet();
         this.createBanana();
         this.createExcrement();
+        this.createFireBullet();
     },
         
     createPlayer: function (){
@@ -52,7 +53,7 @@ var GameLayer = cc.LayerColor.extend({
     createEnemy: function(){
         this.enemy = new Enemy ();
         this.addChild( this.enemy , 2 );
-        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 135 ) );
+        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 100 ) );
         this.enemy.scheduleUpdate();
     },
     
@@ -75,6 +76,12 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.excrement );
         this.excrement.setPosition( new cc.Point( screenWidth - 50 , screenHeight ));
         this.excrement.scheduleUpdate();
+    },
+    
+    createFireBullet: function(){
+        this.fireBullet = new fireBullet();
+        this.addChild(this.fireBullet);
+        this.fireBullet.scheduleUpdate();
     },
     
     keepBullet: function(){
@@ -102,6 +109,8 @@ var GameLayer = cc.LayerColor.extend({
             this.player.moveRight();
         else if ( keyCode == 32)
             this.player.jump();
+        else if ( keyCode == 67)
+            this.fireBullet.fire(this.player);
     },
     
     onKeyUp: function( keyCode, event ) {

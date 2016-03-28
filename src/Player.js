@@ -44,7 +44,7 @@ var Player = cc.Sprite.extend({
     },
     
     jump: function(){
-        if ( this.getPositionY() <= 250 && this.getPositionY() >= 70 ){
+        if ( this.getPositionY() <= 230 && this.getPositionY() >= 70 ){
              this.yVelocity = Player.JUMP_VELOCITY ; 
         }
     }

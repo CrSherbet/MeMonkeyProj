@@ -19,6 +19,7 @@
         "src/Player.js",
         "src/Bullet.js",
         "src/Banana.js",
-        "src/Excrement.js"
+        "src/Excrement.js",
+        "src/fireBullet.js"
     ]
 }

@@ -53,7 +53,7 @@ var GameLayer = cc.LayerColor.extend({
     createEnemy: function(){
         this.enemy = new Enemy ();
         this.addChild( this.enemy , 2 );
-        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 100 ) );
+        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 200 ) );
         this.enemy.scheduleUpdate();
     },
     
@@ -67,14 +67,12 @@ var GameLayer = cc.LayerColor.extend({
     createBanana: function(){
         this.banana = new Banana();
         this.addChild( this.banana );
-        this.banana.setPosition( new cc.Point( screenWidth - 50 , screenHeight ));
         this.banana.scheduleUpdate();
     },
     
     createExcrement: function(){
         this.excrement = new Excrement();
         this.addChild( this.excrement );
-        this.excrement.setPosition( new cc.Point( screenWidth - 50 , screenHeight ));
         this.excrement.scheduleUpdate();
     },
     

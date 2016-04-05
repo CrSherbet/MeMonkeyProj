@@ -1,7 +1,7 @@
 var GameLayer = cc.LayerColor.extend({
     init: function() {
         this.bg = new BG();
-        this.addChild( this.bg );
+        this.addChild( this.bg , 1 );
         this.bg.setPosition( new cc.Point( screenWidth / 2 , screenHeight / 2 ) );
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
@@ -15,20 +15,16 @@ var GameLayer = cc.LayerColor.extend({
             this.states = GameLayer.STATES.STARTED;
             this.gameStart();
         }
-        this.keepBullet();
-        this.player.scheduleUpdate();
-        this.enemy.scheduleUpdate();
-        this.banana.scheduleUpdate();
-        this.excrement.scheduleUpdate();
-        
+        this.keepBullet();     
         this.checkCollision();
-       
             
     },
     
     checkCollision: function(){
-        if ( this.banana.checkCollision() )
-            this.banana.leaveBanana( this.enemy );
+        if ( this.banana1.checkCollision() )
+            this.banana1.leaveBanana( this.enemy );
+        if ( this.banana2.checkCollision() )
+            this.banana2.leaveBanana( this.enemy );
         if ( this.excrement.checkCollision() )
             this.excrement.leaveExcrement( this.enemy );
     },
@@ -37,54 +33,67 @@ var GameLayer = cc.LayerColor.extend({
         this.states = GameLayer.STATES.STARTED;
         this.createPlayer();
         this.createEnemy();
-        this.createBullet();
+        this.createBunchOfBullet();
         this.createBanana();
         this.createExcrement();
-        this.createFireBullet();
+        this.createBullet();
+        this.createBlood();
     },
         
     createPlayer: function (){
         this.player = new Player ();
         this.addChild( this.player , 1 );
-        this.player.setPosition( new cc.Point( screenWidth / 2 , 70 ) );
+        this.player.setPosition( new cc.Point( screenWidth / 2 , 120 ) );
         this.player.scheduleUpdate();
     },
         
     createEnemy: function(){
         this.enemy = new Enemy ();
         this.addChild( this.enemy , 2 );
-        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 200 ) );
+        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 120 ) );
         this.enemy.scheduleUpdate();
     },
     
-    createBullet: function(){
-        this.bullet = new Bullet();
-        this.addChild( this.bullet );
-        this.bullet.randomPos();
-        this.bullet.scheduleUpdate();
+    createBunchOfBullet: function(){
+        this.bunchOfBullet = new BunchOfBullet();
+        this.addChild( this.bunchOfBullet , 1 );
+        this.bunchOfBullet.randomPos();
+        this.bunchOfBullet.scheduleUpdate();
     },
     
     createBanana: function(){
-        this.banana = new Banana();
-        this.addChild( this.banana );
-        this.banana.scheduleUpdate();
+        this.banana1 = new Banana( 0.057 );
+        this.addChild( this.banana1 , 1 );
+        this.banana1.scheduleUpdate();
+        
+        this.banana2 = new Banana( 0.15 );
+        this.addChild( this.banana2 , 1 );
+        this.banana2.scheduleUpdate();
     },
     
     createExcrement: function(){
         this.excrement = new Excrement();
-        this.addChild( this.excrement );
+        this.addChild( this.excrement , 1 );
         this.excrement.scheduleUpdate();
     },
     
-    createFireBullet: function(){
-        this.fireBullet = new fireBullet();
-        this.addChild(this.fireBullet);
-        this.fireBullet.scheduleUpdate();
+    createBullet: function(){
+        this.bullet = new Bullet();
+        this.addChild( this.bullet , 1 );
+        this.bullet.scheduleUpdate();
+    },
+    
+    createBlood: function(){
+        this.playerHP = new Blood( 161 );
+        this.addChild( this.playerHP  );
+        
+        this.enemyHP = new Blood( 619 );
+        this.addChild( this.enemyHP );
     },
     
     keepBullet: function(){
-        if ( this.bullet.closeTo( this.player ))
-            this.bullet.randomPos();
+        if ( this.bunchOfBullet.closeTo( this.player ))
+            this.bunchOfBullet.randomPos();
     },
     
     addKeyboardHandlers: function() {
@@ -108,7 +117,7 @@ var GameLayer = cc.LayerColor.extend({
         else if ( keyCode == 32)
             this.player.jump();
         else if ( keyCode == 67)
-            this.fireBullet.fire(this.player);
+            this.bullet.fire( this.player );
     },
     
     onKeyUp: function( keyCode, event ) {

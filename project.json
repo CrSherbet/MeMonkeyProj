@@ -17,9 +17,10 @@
         "src/BG.js",
         "src/Enemy.js",
         "src/Player.js",
-        "src/Bullet.js",
+        "src/BunchOfBullet.js",
         "src/Banana.js",
         "src/Excrement.js",
-        "src/fireBullet.js"
+        "src/Bullet.js",
+        "src/Blood.js"
     ]
 }

@@ -1,14 +1,15 @@
 var Banana = cc.Sprite.extend({
-    ctor: function(){
+    ctor: function( speed ){
     this._super();
     this.initWithFile( 'res/images/banana.png' );
     this.velocity = 0;
+    this.speed = -speed;
     },
     
     update: function( dt ){
         var pos = this.getPosition();
         this.setPosition( new cc.Point ( pos.x , pos.y + this.velocity ));
-        this.velocity += Banana.G ;
+        this.velocity += this.speed ;
             
     },
     
@@ -28,4 +29,4 @@ var Banana = cc.Sprite.extend({
     }
 })
 
-Banana.G = -0.15 ;
+

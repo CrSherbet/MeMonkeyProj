@@ -17,7 +17,7 @@ var Player = cc.Sprite.extend({
     
     calGavity: function (){
         var pos = this.getPosition();
-        if( pos.y + this.yVelocity > 70 )
+        if( pos.y + this.yVelocity > 120 )
             this.yVelocity += Player.G ;
         else 
             this.yVelocity = 0;
@@ -26,9 +26,9 @@ var Player = cc.Sprite.extend({
     calFiction: function (){
         var pos = this.getPosition();
         if (this.dirMove ==  "right" && this.xVelocity > 0)
-            this.xVelocity -= 0.25 ;
+            this.xVelocity -= 0.5;
         else if (this.dirMove ==  "left" && this.xVelocity < 0)
-            this.xVelocity += 0.25 ;
+            this.xVelocity += 0.5;
         if( pos.x + this.xVelocity > screenWidth - 50  || pos.x + this.xVelocity < 50 )
             this.xVelocity = 0;
     },
@@ -44,7 +44,7 @@ var Player = cc.Sprite.extend({
     },
     
     jump: function(){
-        if ( this.getPositionY() <= 230 && this.getPositionY() >= 70 ){
+        if ( this.getPositionY() <= 230 && this.getPositionY() >= 120 ){
              this.yVelocity = Player.JUMP_VELOCITY ; 
         }
     }

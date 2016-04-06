@@ -5,6 +5,7 @@ var GameLayer = cc.LayerColor.extend({
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
         this.scheduleUpdate();
+        this.amountOfBullet = 3 ;
         
 	return true;
     },
@@ -19,12 +20,40 @@ var GameLayer = cc.LayerColor.extend({
     gameStart: function(){ 
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
+       
     },
     
     keepBullet: function(){
-        if ( this.bunchOfBullet.closeTo( this.player ))
-            this.bunchOfBullet.randomPos();
+        if(this.amountOfBullet >= 0 && this.amountOfBullet < 3){
+            if ( this.bunchOfBullet.closeTo( this.player ) ){
+                this.bunchOfBullet.randomPos();
+                this.amountOfBullet++;
+                if( this.amountOfBullet == 1){
+                    this.firstBullet.showNumOfBullet( this.amountOfBullet );
+                    this.firstBullet.firing = false ;
+                }
+                else if( this.amountOfBullet == 2 ){
+                    this.secondBullet.showNumOfBullet( this.amountOfBullet );
+                    this.secondBullet.firing = false ;
+                }
+                else if( this.amountOfBullet == 3){
+                    this.thirdBullet.showNumOfBullet( this.amountOfBullet ); 
+                    this.thirdBullet.firing = false ;
+                }
+            }   
+        }
     },
+    
+    fireBullet: function(){ 
+        if( this.amountOfBullet == 1 )
+            this.firstBullet.fire( this.player );
+        else if ( this.amountOfBullet == 2 )
+            this.secondBullet.fire( this.player );
+        else if ( this.amountOfBullet == 3)
+            this.thirdBullet.fire( this.player );
+        this.amountOfBullet -- ;        
+    },
+    
     
     hitBorder: function(){
         if ( this.banana1.checkCollision() )
@@ -86,9 +115,17 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     createBullet: function(){
-        this.bullet = new Bullet();
-        this.addChild( this.bullet , 1 );
-        this.bullet.scheduleUpdate();
+        this.firstBullet = new Bullet( 1 );
+        this.addChild( this.firstBullet , 1 );
+        this.firstBullet.scheduleUpdate();
+        
+        this.secondBullet = new Bullet( 2 );
+        this.addChild( this.secondBullet , 1 );
+        this.secondBullet.scheduleUpdate();
+        
+        this.thirdBullet = new Bullet( 3 );
+        this.addChild( this.thirdBullet , 1 );
+        this.thirdBullet.scheduleUpdate();
     },
     
     createBlood: function(){
@@ -121,13 +158,17 @@ var GameLayer = cc.LayerColor.extend({
             this.player.moveRight();
         else if ( keyCode == 32)
             this.player.jump();
-        else if ( keyCode == 67)
-            this.bullet.fire( this.player );
+        else if ( keyCode == 67){
+            if(this.amountOfBullet >0)
+                this.fireBullet();
+        }
     },
     
     onKeyUp: function( keyCode, event ) {
 
     }
+    
+    
 })
 
 GameLayer.STATES = {

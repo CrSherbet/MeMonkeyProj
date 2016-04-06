@@ -2,7 +2,7 @@ var Enemy = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/monkey.png' );
-        this.setPosition( new cc.Point( Math.random() * 750 + 50 , screenHeight - 120 ) );
+        this.setPosition( new cc.Point( Math.random() * 700 + 50 , screenHeight - 120 ) );
         this.direction = Enemy.DIRECTION.LEFT ;
         this.states = Enemy.STATES.FRONT ;
     },

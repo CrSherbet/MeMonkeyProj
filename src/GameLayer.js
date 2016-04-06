@@ -1,8 +1,7 @@
 var GameLayer = cc.LayerColor.extend({
     init: function() {
-        this.bg = new BG();
-        this.addChild( this.bg , 1 );
-        this.bg.setPosition( new cc.Point( screenWidth / 2 , screenHeight / 2 ) );
+        this.createBG();
+        this.createElement();
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
         this.scheduleUpdate();
@@ -11,16 +10,23 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     update: function(){
-        if ( this.states == GameLayer.STATES.FRONT ){
-            this.states = GameLayer.STATES.STARTED;
-            this.gameStart();
-        }
-        this.keepBullet();     
-        this.checkCollision();
-            
+         if( this.states == GameLayer.STATES.STARTED ){
+            this.keepBullet();     
+            this.hitBorder();
+        }   
     },
     
-    checkCollision: function(){
+    gameStart: function(){ 
+        this.states = GameLayer.STATES.STARTED; 
+        this.enemy.changeStates();
+    },
+    
+    keepBullet: function(){
+        if ( this.bunchOfBullet.closeTo( this.player ))
+            this.bunchOfBullet.randomPos();
+    },
+    
+    hitBorder: function(){
         if ( this.banana1.checkCollision() )
             this.banana1.leaveBanana( this.enemy );
         if ( this.banana2.checkCollision() )
@@ -29,8 +35,7 @@ var GameLayer = cc.LayerColor.extend({
             this.excrement.leaveExcrement( this.enemy );
     },
     
-    gameStart: function(){
-        this.states = GameLayer.STATES.STARTED;
+    createElement: function(){
         this.createPlayer();
         this.createEnemy();
         this.createBunchOfBullet();
@@ -39,18 +44,21 @@ var GameLayer = cc.LayerColor.extend({
         this.createBullet();
         this.createBlood();
     },
+    
+    createBG: function(){
+        this.bg = new BG();
+        this.addChild( this.bg , 1 );
+    },
         
     createPlayer: function (){
         this.player = new Player ();
         this.addChild( this.player , 1 );
-        this.player.setPosition( new cc.Point( screenWidth / 2 , 120 ) );
         this.player.scheduleUpdate();
     },
         
     createEnemy: function(){
         this.enemy = new Enemy ();
         this.addChild( this.enemy , 2 );
-        this.enemy.setPosition( new cc.Point( screenWidth - 50 , screenHeight - 120 ) );
         this.enemy.scheduleUpdate();
     },
     
@@ -91,11 +99,6 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyHP );
     },
     
-    keepBullet: function(){
-        if ( this.bunchOfBullet.closeTo( this.player ))
-            this.bunchOfBullet.randomPos();
-    },
-    
     addKeyboardHandlers: function() {
         var self = this;
         cc.eventManager.addListener({
@@ -110,6 +113,8 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     onKeyDown: function( keyCode, event ) {
+        if(this.states == GameLayer.STATES.FRONT )
+            this.gameStart();
         if ( keyCode == 37 )
             this.player.moveLeft();
         else if ( keyCode == 39)

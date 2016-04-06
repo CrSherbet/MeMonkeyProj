@@ -2,6 +2,7 @@ var Player = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/tiger.png' );
+        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) );
         this.dirMove = "" ;
         this.xVelocity = 0;
         this.yVelocity = 0;

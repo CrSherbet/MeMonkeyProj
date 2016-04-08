@@ -42,8 +42,12 @@ var GameLayer = cc.LayerColor.extend({
                 }
             }   
         }
+   /*     else
+            this.bunchOfBullet.*/
     },
-    
+    canKeepBullet: function(){
+       
+    },
     fireBullet: function(){ 
         if( this.amountOfBullet == 1 )
             this.firstBullet.fire( this.player );

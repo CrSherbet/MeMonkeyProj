@@ -24,30 +24,43 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     keepBullet: function(){
-        if(this.amountOfBullet >= 0 && this.amountOfBullet < 3){
-            if ( this.bunchOfBullet.closeTo( this.player ) ){
-                this.bunchOfBullet.randomPos();
-                this.amountOfBullet++;
-                if( this.amountOfBullet == 1){
-                    this.firstBullet.showNumOfBullet( this.amountOfBullet );
-                    this.firstBullet.firing = false ;
-                }
-                else if( this.amountOfBullet == 2 ){
-                    this.secondBullet.showNumOfBullet( this.amountOfBullet );
-                    this.secondBullet.firing = false ;
-                }
-                else if( this.amountOfBullet == 3){
-                    this.thirdBullet.showNumOfBullet( this.amountOfBullet ); 
-                    this.thirdBullet.firing = false ;
-                }
-            }   
+        if( this.checkFullStock() ){
+            this.bunchOfBullet.disappear();
+        } else {
+            this.bunchOfBullet.appear();
+            this.canKeepBullet();
+            this.showStockOfBullet();
         }
-   /*     else
-            this.bunchOfBullet.*/
+            
     },
+        
     canKeepBullet: function(){
-       
+       if ( this.bunchOfBullet.closeTo( this.player ) ){
+            this.bunchOfBullet.randomPos();
+            this.amountOfBullet++; 
+        }
     },
+    
+    checkFullStock: function(){
+         if(this.amountOfBullet == 3)
+            return true ;
+    },
+    
+    showStockOfBullet: function(){
+        if( this.amountOfBullet == 1){
+            this.firstBullet.showNumOfBullet( this.amountOfBullet );
+            this.firstBullet.firing = false ;
+        }
+        else if( this.amountOfBullet == 2 ){
+            this.secondBullet.showNumOfBullet( this.amountOfBullet );
+            this.secondBullet.firing = false ;
+        }
+        else if( this.amountOfBullet == 3){
+            this.thirdBullet.showNumOfBullet( this.amountOfBullet ); 
+            this.thirdBullet.firing = false ;
+        }
+    },
+    
     fireBullet: function(){ 
         if( this.amountOfBullet == 1 )
             this.firstBullet.fire( this.player );
@@ -57,7 +70,6 @@ var GameLayer = cc.LayerColor.extend({
             this.thirdBullet.fire( this.player );
         this.amountOfBullet -- ;        
     },
-    
     
     hitBorder: function(){
         if ( this.banana1.checkCollision() )
@@ -98,7 +110,6 @@ var GameLayer = cc.LayerColor.extend({
     createBunchOfBullet: function(){
         this.bunchOfBullet = new BunchOfBullet();
         this.addChild( this.bunchOfBullet , 1 );
-        this.bunchOfBullet.randomPos();
         this.bunchOfBullet.scheduleUpdate();
     },
     

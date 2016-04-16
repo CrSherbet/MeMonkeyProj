@@ -5,6 +5,7 @@ var Enemy = cc.Sprite.extend({
         this.setPosition( new cc.Point( Math.random() * 700 + 50 , screenHeight - 120 ) );
         this.direction = Enemy.DIRECTION.LEFT ;
         this.states = Enemy.STATES.FRONT ;
+        this.speed = 1 ;
     },
     
     update: function( dt ){
@@ -17,13 +18,18 @@ var Enemy = cc.Sprite.extend({
             this.states = Enemy.STATES.STARTED ;
     },
     
+    speedUp: function(){
+        if( this.speed < 2.5 )
+            this.speed += 1.5 ;
+    },
+    
     changeDirection: function(){
         var pos = this.getPosition();
         if ( pos.x > screenWidth -50 )
             this.direction = Enemy.DIRECTION.LEFT ;
         else if ( pos.x < 50 )
             this.direction = Enemy.DIRECTION.RIGHT ;
-        this.setPosition( new cc.Point( pos.x + this.direction , pos.y ));
+        this.setPosition( new cc.Point( pos.x + this.direction * this.speed , pos.y ));
     }
 });
 

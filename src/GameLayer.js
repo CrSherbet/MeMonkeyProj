@@ -1,6 +1,5 @@
 var GameLayer = cc.LayerColor.extend({
     init: function() {
-        this.createBG();
         this.createElement();
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
@@ -14,6 +13,7 @@ var GameLayer = cc.LayerColor.extend({
          if( this.states == GameLayer.STATES.STARTED ){
             this.keepBullet();     
             this.hitBorder();
+            this.hitPoison();
         }   
     },
     
@@ -29,13 +29,13 @@ var GameLayer = cc.LayerColor.extend({
         } else {
             this.bunchOfBullet.appear();
             this.canKeepBullet();
-            this.showStockOfBullet();
         }
+        this.showStockOfBullet();
             
     },
         
     canKeepBullet: function(){
-       if ( this.bunchOfBullet.closeTo( this.player ) ){
+       if ( this.closeTo( this.bunchOfBullet ,this.player ) ){
             this.bunchOfBullet.randomPos();
             this.amountOfBullet++; 
         }
@@ -47,7 +47,7 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     showStockOfBullet: function(){
-        if( this.amountOfBullet == 1){
+         if( this.amountOfBullet == 1){
             this.firstBullet.showNumOfBullet( this.amountOfBullet );
             this.firstBullet.firing = false ;
         }
@@ -59,7 +59,8 @@ var GameLayer = cc.LayerColor.extend({
             this.thirdBullet.showNumOfBullet( this.amountOfBullet ); 
             this.thirdBullet.firing = false ;
         }
-    },
+     },
+
     
     fireBullet: function(){ 
         if( this.amountOfBullet == 1 )
@@ -69,6 +70,28 @@ var GameLayer = cc.LayerColor.extend({
         else if ( this.amountOfBullet == 3)
             this.thirdBullet.fire( this.player );
         this.amountOfBullet -- ;        
+    },
+    
+    closeTo: function( enemy , player ) {
+	var playerPos = player.getPosition();
+	var enemyPos = enemy.getPosition();
+  	return ( ( Math.abs( playerPos.x - enemyPos.x ) <= 60 ) &&
+		 ( Math.abs( playerPos.y - enemyPos.y ) <= 60 ) );
+    },
+    
+    hitPoison: function(){
+        if ( this.closeTo ( this.banana1 , this.player ) || this.closeTo ( this.banana2 , this.player ) || this.closeTo ( this.excrement , this.player)){
+            this.playerHP.decreaseHP( 1 );
+            
+        }
+        else if ( this.closeTo ( this.firstBullet , this.enemy ) || this.closeTo ( this.secondBullet , this.enemy ) || this.closeTo ( this.thirdBullet , this.enemy )){ 
+            this.enemyHP.decreaseHP( -1 );
+            this.enemy.speedUp();
+            this.banana1.speedUp();
+            this.banana2.speedUp();
+        }
+        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 )
+            this.stop();
     },
     
     hitBorder: function(){
@@ -81,6 +104,7 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     createElement: function(){
+        this.createBG();
         this.createPlayer();
         this.createEnemy();
         this.createBunchOfBullet();
@@ -141,13 +165,22 @@ var GameLayer = cc.LayerColor.extend({
         this.thirdBullet = new Bullet( 3 );
         this.addChild( this.thirdBullet , 1 );
         this.thirdBullet.scheduleUpdate();
+
+     /*   var bullet = new Array ( this.amountOfBullet ) ;
+        for ( var i = 0 ; i< this.amountOfBullet ; i++){
+            console.log("5555");
+            bullet[i] = new Bullet ( i+1 );
+            this.addChild( bullet[i] );
+            bullet[i].scheduleUpdate();
+        }*/
+       
     },
     
     createBlood: function(){
-        this.playerHP = new Blood( 161 );
+        this.playerHP = new Blood( 619 );
         this.addChild( this.playerHP  );
         
-        this.enemyHP = new Blood( 619 );
+        this.enemyHP = new Blood( 161 );
         this.addChild( this.enemyHP );
     },
     
@@ -181,9 +214,7 @@ var GameLayer = cc.LayerColor.extend({
     
     onKeyUp: function( keyCode, event ) {
 
-    }
-    
-    
+    } 
 })
 
 GameLayer.STATES = {

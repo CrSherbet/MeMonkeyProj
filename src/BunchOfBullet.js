@@ -11,13 +11,6 @@ var BunchOfBullet = cc.Sprite.extend({
         this.setPosition( new cc.Point( x + 70 , y + 70 ));
     },
     
-    closeTo: function( obj ) {
-	var myPos = this.getPosition();
-	var oPos = obj.getPosition();
-  	return ( ( Math.abs( myPos.x - oPos.x ) <= 60 ) &&
-		 ( Math.abs( myPos.y - oPos.y ) <= 60 ) );
-    },
-    
     disappear: function(){
         this.setPosition( new cc.Point( 850 , 650 ));
         this.status = false ;

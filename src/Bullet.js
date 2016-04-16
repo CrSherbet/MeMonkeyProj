@@ -2,9 +2,9 @@ var Bullet = cc.Sprite.extend({
     ctor: function( numOfBullet ) {
         this._super();
         this.initWithFile( 'res/images/bullet.png' );
-        this.firing = false;
+        this.firing = false ;
         this.numOfBullet = numOfBullet;
-        this.showNumOfBullet();
+        this.showNumOfBullet();       
     },
     
     update: function( dt ){

@@ -21,8 +21,8 @@ var Banana = cc.Sprite.extend({
     },
     
     speedUp: function(){
-        if ( this.speed < 0.18 )
-            this.speed *= 1.05 ;
+        if ( this.speed < -0.3 )
+            this.speed -= 0.08 ;
     },
     
     checkCollision: function(){

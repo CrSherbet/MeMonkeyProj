@@ -19,13 +19,13 @@ var Enemy = cc.Sprite.extend({
     },
     
     speedUp: function(){
-        if( this.speed < 2.5 )
-            this.speed += 1.5 ;
+        if(this.speed < 3 )
+            this.speed += 0.03 ;
     },
     
     changeDirection: function(){
         var pos = this.getPosition();
-        if ( pos.x > screenWidth -50 )
+        if ( pos.x > screenWidth - 50 )
             this.direction = Enemy.DIRECTION.LEFT ;
         else if ( pos.x < 50 )
             this.direction = Enemy.DIRECTION.RIGHT ;

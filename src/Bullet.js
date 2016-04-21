@@ -33,7 +33,7 @@ var Bullet = cc.Sprite.extend({
     
    fire: function( player ){
         this.firing = true ;
-        var posXPlayer = player.getPositionX();
-        this.setPosition( new cc.Point ( posXPlayer , 75 ));
+        var posPlayer = player.getPosition();
+        this.setPosition( new cc.Point ( posPlayer.x , posPlayer.y ));
     }
 })

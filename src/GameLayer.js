@@ -73,22 +73,24 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     closeTo: function( enemy , player ) {
-	var playerPos = player.getPosition();
-	var enemyPos = enemy.getPosition();
-  	return ( ( Math.abs( playerPos.x - enemyPos.x ) <= 60 ) &&
+        var playerPos = player.getPosition();
+        var enemyPos = enemy.getPosition();
+  	    return ( ( Math.abs( playerPos.x - enemyPos.x ) <= 60 ) &&
 		 ( Math.abs( playerPos.y - enemyPos.y ) <= 60 ) );
     },
     
     hitPoison: function(){
+        
         if ( this.closeTo ( this.banana1 , this.player ) || this.closeTo ( this.banana2 , this.player ) || this.closeTo ( this.excrement , this.player)){
             this.playerHP.decreaseHP( 1 );
             
         }
-        else if ( this.closeTo ( this.firstBullet , this.enemy ) || this.closeTo ( this.secondBullet , this.enemy ) || this.closeTo ( this.thirdBullet , this.enemy )){ 
+        else if ( this.closeTo ( this.firstBullet , this.enemy ) || this.closeTo ( this.secondBullet , this.enemy ) || this.closeTo ( this.thirdBullet , this.enemy )){
             this.enemyHP.decreaseHP( -1 );
             this.enemy.speedUp();
             this.banana1.speedUp();
             this.banana2.speedUp();
+            
         }
         if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 )
             this.stop();
@@ -134,6 +136,7 @@ var GameLayer = cc.LayerColor.extend({
     createBunchOfBullet: function(){
         this.bunchOfBullet = new BunchOfBullet();
         this.addChild( this.bunchOfBullet , 1 );
+        this.bunchOfBullet.disappear();
         this.bunchOfBullet.scheduleUpdate();
     },
     
@@ -177,7 +180,8 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     createBlood: function(){
-        this.playerHP = new Blood( 619 );
+        console.log("555");
+        this.playerHP = new Blood( 620 );
         this.addChild( this.playerHP  );
         
         this.enemyHP = new Blood( 161 );

@@ -2,9 +2,9 @@ var Bullet = cc.Sprite.extend({
     ctor: function( numOfBullet ) {
         this._super();
         this.initWithFile( 'res/images/bullet.png' );
-        this.firing = false ;
         this.numOfBullet = numOfBullet;
-        this.showNumOfBullet();       
+        this.firing = false ;
+        this.showBullet();       
     },
     
     update: function( dt ){
@@ -15,15 +15,20 @@ var Bullet = cc.Sprite.extend({
         }        
     },
     
-    showNumOfBullet: function(  ){
+    showBullet: function(  ){
         if( this.numOfBullet == 1 )
             this.setPosition( new cc.Point( 745 , 35 ));
         else if ( this.numOfBullet == 2 )
             this.setPosition( new cc.Point( 760 , 35 ));
-        else
+        else if ( this.numOfBullet == 3 )
             this.setPosition( new cc.Point( 775 , 35 ));
+        else 
+            this.setPosition( new cc.Point( -15 , -15 ));
     },
     
+    decreaseStock: function(){
+        this.setPosition( new cc.Point ( -15 , -15 ));    
+    },
     
     hitBorder: function( pos ){
         if( pos.y + 5 >= screenHeight ){

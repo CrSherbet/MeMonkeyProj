@@ -2,6 +2,7 @@ var BunchOfBullet = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/bunchOfBullet.png' );
+        this.setPosition( new cc.Point( -15 , -15 ));
         this.status = false ;
     },
     

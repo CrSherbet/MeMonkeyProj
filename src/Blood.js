@@ -8,11 +8,11 @@ var Blood = cc.Sprite.extend({
     
     decreaseHP: function( obj ){
         var pos = this.getPosition();
-        this.HP -= 0.815 ;
+        this.HP -= 0.785 ;
         if ( obj == 1 )
-            this.setPosition( new cc.Point ( pos.x + 1.5 , pos.y ));
+            this.setPosition( new cc.Point ( pos.x + 1.45 , pos.y ));
         else
-            this.setPosition( new cc.Point ( pos.x - 1.5 , pos.y ));
+            this.setPosition( new cc.Point ( pos.x - 1.45 , pos.y ));
     }
     
 });

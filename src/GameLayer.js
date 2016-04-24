@@ -1,30 +1,39 @@
 var GameLayer = cc.LayerColor.extend({
     init: function() {
+        this.currentNumBullet = GameLayer.AMOUNTOF.Bullet  ;
+        this.bullet = [];
+        this.obstacle = [];
         this.createElement();
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
         this.scheduleUpdate();
-        this.amountOfBullet = 3 ;
-        
 	return true;
     },
     
     update: function(){
          if( this.states == GameLayer.STATES.STARTED ){
             this.keepBullet();     
-            this.hitBorder();
-            this.hitPoison();
+            this.hitGroundOrPlayer();
+            this.hitEnemy();
+            this.hitObstacle();
+            this.end();
         }   
     },
     
     gameStart: function(){ 
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
-       
+        this.createObstacle();  
+    },
+    
+    end: function(){
+        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 )
+            this.stop();      
     },
     
     keepBullet: function(){
-        if( this.checkFullStock() ){
+
+        if( this.currentNumBullet == 3 ){
             this.bunchOfBullet.disappear();
         } else {
             this.bunchOfBullet.appear();
@@ -33,43 +42,35 @@ var GameLayer = cc.LayerColor.extend({
         this.showStockOfBullet();
             
     },
-        
+
     canKeepBullet: function(){
-       if ( this.closeTo( this.bunchOfBullet ,this.player ) ){
+       if ( this.closeTo( this.bunchOfBullet , this.player ) ){
             this.bunchOfBullet.randomPos();
-            this.amountOfBullet++; 
+            this.currentNumBullet++; 
         }
-    },
-    
-    checkFullStock: function(){
-         if(this.amountOfBullet == 3)
-            return true ;
     },
     
     showStockOfBullet: function(){
-         if( this.amountOfBullet == 1){
-            this.firstBullet.showNumOfBullet( this.amountOfBullet );
-            this.firstBullet.firing = false ;
-        }
-        else if( this.amountOfBullet == 2 ){
-            this.secondBullet.showNumOfBullet( this.amountOfBullet );
-            this.secondBullet.firing = false ;
-        }
-        else if( this.amountOfBullet == 3){
-            this.thirdBullet.showNumOfBullet( this.amountOfBullet ); 
-            this.thirdBullet.firing = false ;
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Bullet ; i++ ){
+            if( i < this.currentNumBullet ){
+                this.bullet[i].showBullet( i+1 );
+                this.bullet[i].firing = false ;
+            }
+            else
+                this.bullet[i].decreaseStock();
         }
      },
 
-    
     fireBullet: function(){ 
-        if( this.amountOfBullet == 1 )
-            this.firstBullet.fire( this.player );
-        else if ( this.amountOfBullet == 2 )
-            this.secondBullet.fire( this.player );
-        else if ( this.amountOfBullet == 3)
-            this.thirdBullet.fire( this.player );
-        this.amountOfBullet -- ;        
+        if(this.currentNumBullet > 0 ){
+            for ( var i = 0 ; i < this.currentNumBullet  ; i++ ){
+                if( this.currentNumBullet == i+1 ){
+                    this.bullet[i+3].fire( this.player );
+                }
+            }
+        this.currentNumBullet -- ;    
+        this.showStockOfBullet();
+        }
     },
     
     closeTo: function( enemy , player ) {
@@ -79,41 +80,44 @@ var GameLayer = cc.LayerColor.extend({
 		 ( Math.abs( playerPos.y - enemyPos.y ) <= 60 ) );
     },
     
-    hitPoison: function(){
-        
-        if ( this.closeTo ( this.banana1 , this.player ) || this.closeTo ( this.banana2 , this.player ) || this.closeTo ( this.excrement , this.player)){
-            this.playerHP.decreaseHP( 1 );
-            
+    hitObstacle: function(){
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
+            if ( this.closeTo ( this.obstacle[i] , this.player )){
+                this.playerHP.decreaseHP( 1 );
+            }
         }
-        else if ( this.closeTo ( this.firstBullet , this.enemy ) || this.closeTo ( this.secondBullet , this.enemy ) || this.closeTo ( this.thirdBullet , this.enemy )){
-            this.enemyHP.decreaseHP( -1 );
-            this.enemy.speedUp();
-            this.banana1.speedUp();
-            this.banana2.speedUp();
-            
-        }
-        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 )
-            this.stop();
     },
     
-    hitBorder: function(){
-        if ( this.banana1.checkCollision() )
-            this.banana1.leaveBanana( this.enemy );
-        if ( this.banana2.checkCollision() )
-            this.banana2.leaveBanana( this.enemy );
-        if ( this.excrement.checkCollision() )
-            this.excrement.leaveExcrement( this.enemy );
+    hitEnemy: function(){
+        for ( var i = 3 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++ ){
+            if( this.closeTo ( this.bullet[i] , this.enemy )){
+                this.enemyHP.decreaseHP( -1 );
+                this.speedUp();
+            }
+        }
+    },
+    
+    speedUp: function(){
+        this.enemy.speedUp();
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
+            this.obstacle[i].speedUp();
+        }
+    },
+    
+    hitGroundOrPlayer: function(){
+        for( var i = 0 ; i < this.obstacle.length ; i++ ){
+            if ( this.obstacle[i].checkCollision( this.player ) )
+                this.obstacle[i].leave( this.enemy );
+        }
     },
     
     createElement: function(){
         this.createBG();
         this.createPlayer();
         this.createEnemy();
-        this.createBunchOfBullet();
-        this.createBanana();
-        this.createExcrement();
         this.createBullet();
         this.createBlood();
+        this.createBunchOfBullet();
     },
     
     createBG: function(){
@@ -136,51 +140,29 @@ var GameLayer = cc.LayerColor.extend({
     createBunchOfBullet: function(){
         this.bunchOfBullet = new BunchOfBullet();
         this.addChild( this.bunchOfBullet , 1 );
-        this.bunchOfBullet.disappear();
         this.bunchOfBullet.scheduleUpdate();
     },
     
-    createBanana: function(){
-        this.banana1 = new Banana( 0.057 );
-        this.addChild( this.banana1 , 1 );
-        this.banana1.scheduleUpdate();
-        
-        this.banana2 = new Banana( 0.15 );
-        this.addChild( this.banana2 , 1 );
-        this.banana2.scheduleUpdate();
-    },
-    
-    createExcrement: function(){
-        this.excrement = new Excrement();
-        this.addChild( this.excrement , 1 );
-        this.excrement.scheduleUpdate();
+    createObstacle: function(){
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
+            if ( i < GameLayer.AMOUNTOF.Banana )
+                this.obstacle.push( new Banana ( 0.12 - Math.random()/10 ) );
+            else
+                this.obstacle.push( new Excrement ( 0.12 - Math.random()/10 ) );
+            this.addChild( this.obstacle[i] , 1 );
+            this.obstacle[i].scheduleUpdate();
+        }
     },
     
     createBullet: function(){
-        this.firstBullet = new Bullet( 1 );
-        this.addChild( this.firstBullet , 1 );
-        this.firstBullet.scheduleUpdate();
-        
-        this.secondBullet = new Bullet( 2 );
-        this.addChild( this.secondBullet , 1 );
-        this.secondBullet.scheduleUpdate();
-        
-        this.thirdBullet = new Bullet( 3 );
-        this.addChild( this.thirdBullet , 1 );
-        this.thirdBullet.scheduleUpdate();
-
-     /*   var bullet = new Array ( this.amountOfBullet ) ;
-        for ( var i = 0 ; i< this.amountOfBullet ; i++){
-            console.log("5555");
-            bullet[i] = new Bullet ( i+1 );
-            this.addChild( bullet[i] );
-            bullet[i].scheduleUpdate();
-        }*/
-       
+       for (var i = 0 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++){
+            this.bullet.push( new Bullet ( i+1 ) );
+            this.addChild( this.bullet[i] , 1 );
+            this.bullet[i].scheduleUpdate();
+        }
     },
     
     createBlood: function(){
-        console.log("555");
         this.playerHP = new Blood( 620 );
         this.addChild( this.playerHP  );
         
@@ -211,8 +193,7 @@ var GameLayer = cc.LayerColor.extend({
         else if ( keyCode == 32)
             this.player.jump();
         else if ( keyCode == 67){
-            if(this.amountOfBullet >0)
-                this.fireBullet();
+            this.fireBullet();
         }
     },
     
@@ -222,9 +203,16 @@ var GameLayer = cc.LayerColor.extend({
 })
 
 GameLayer.STATES = {
-    FRONT: 1,
-    STARTED: 2,
+    FRONT: 1 ,
+    STARTED: 2 ,
     DEAD : 3
+};
+
+GameLayer.AMOUNTOF = {
+    Banana: 3 ,
+    Excrement: 2 ,
+    Obstacle: 5 ,
+    Bullet : 3 
 };
 
 var StartScene = cc.Scene.extend({

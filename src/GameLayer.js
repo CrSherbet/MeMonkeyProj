@@ -11,13 +11,13 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     update: function(){
-         if( this.states == GameLayer.STATES.STARTED ){
+        if( this.states == GameLayer.STATES.STARTED ){
             this.keepBullet();     
             this.hitGroundOrPlayer();
             this.hitEnemy();
             this.hitObstacle();
             this.end();
-        }   
+        }
     },
     
     gameStart: function(){ 
@@ -26,13 +26,29 @@ var GameLayer = cc.LayerColor.extend({
         this.createObstacle();  
     },
     
+    pause: function(){
+        if ( this.states == GameLayer.STATES.STARTED ){
+            this.states = GameLayer.STATES.PAUSED ;
+            cc.director.pause();
+        } else {
+            this.states = GameLayer.STATES.STARTED ;
+            cc.director.resume();
+        }
+    },
+    
+    backToPlay: function(){
+        this.states = GameLayer.STATES.STARTED ;
+        this.setUpdate();
+    },
+    
     end: function(){
-        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 )
+        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 ){
             this.stop();      
+            this.states = GameLayer.STATES.DEAD ;
+        }
     },
     
     keepBullet: function(){
-
         if( this.currentNumBullet == 3 ){
             this.bunchOfBullet.disappear();
         } else {
@@ -62,15 +78,22 @@ var GameLayer = cc.LayerColor.extend({
      },
 
     fireBullet: function(){ 
-        if(this.currentNumBullet > 0 ){
+        if( this.canfire() ){
             for ( var i = 0 ; i < this.currentNumBullet  ; i++ ){
                 if( this.currentNumBullet == i+1 ){
                     this.bullet[i+3].fire( this.player );
                 }
             }
-        this.currentNumBullet -- ;    
-        this.showStockOfBullet();
         }
+    },
+    
+    canfire: function(){
+        if( this.currentNumBullet > 0  && this.states == GameLayer.STATES.STARTED ){
+            this.currentNumBullet -- ;    
+            this.showStockOfBullet();
+            return true ;
+         }
+        return false ;
     },
     
     closeTo: function( enemy , player ) {
@@ -192,9 +215,10 @@ var GameLayer = cc.LayerColor.extend({
             this.player.moveRight();
         else if ( keyCode == 32)
             this.player.jump();
-        else if ( keyCode == 67){
+        else if ( keyCode == 67)
             this.fireBullet();
-        }
+        else if ( keyCode == 80)
+            this.pause();
     },
     
     onKeyUp: function( keyCode, event ) {
@@ -203,15 +227,16 @@ var GameLayer = cc.LayerColor.extend({
 })
 
 GameLayer.STATES = {
-    FRONT: 1 ,
-    STARTED: 2 ,
-    DEAD : 3
+    FRONT : 1 ,
+    STARTED : 2 ,
+    PAUSED : 3,
+    DEAD : 4
 };
 
 GameLayer.AMOUNTOF = {
-    Banana: 3 ,
-    Excrement: 2 ,
-    Obstacle: 5 ,
+    Banana : 3 ,
+    Excrement : 2 ,
+    Obstacle : 5 ,
     Bullet : 3 
 };
 

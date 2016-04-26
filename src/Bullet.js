@@ -11,7 +11,7 @@ var Bullet = cc.Sprite.extend({
         if(this.firing){
             var pos = this.getPosition();
             this.setPosition( new cc.Point ( pos.x , pos.y + 5 ));
-            this.hitBorder(pos);
+            this.hitBorder( pos );
         }        
     },
     
@@ -32,11 +32,15 @@ var Bullet = cc.Sprite.extend({
     
     hitBorder: function( pos ){
         if( pos.y + 5 >= screenHeight ){
-                this.setPosition( new cc.Point ( -10 , -10 ));
+                this.setPosition( new cc.Point ( -15 , -15 ));
         }
     },
     
-   fire: function( player ){
+    hitEnemy: function(){
+         this.setPosition( new cc.Point ( -15 , -15 ));
+    },
+    
+    fire: function( player ){
         this.firing = true ;
         var posPlayer = player.getPosition();
         this.setPosition( new cc.Point ( posPlayer.x , posPlayer.y ));

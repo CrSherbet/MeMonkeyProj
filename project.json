@@ -21,6 +21,9 @@
         "src/Banana.js",
         "src/Excrement.js",
         "src/Bullet.js",
-        "src/Blood.js"
+        "src/Blood.js",
+        "src/BlastEff.js",
+        "src/Winner.js",
+        "src/Loser.js"
     ]
 }

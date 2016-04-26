@@ -25,14 +25,19 @@ var Banana = cc.Sprite.extend({
             this.speed -= 0.001 ;
     },
     
+    closeTo: function( bananaPos , playerPos ) {
+  	    return ( ( Math.abs( playerPos.x - bananaPos.x ) <= 55 ) &&
+		 ( Math.abs( playerPos.y - bananaPos.y ) <= 55 ) );
+    },
+    
     checkCollision: function( player ){
-        var pos = this.getPosition();
+        var bananaPos = this.getPosition();
         var playerPos = player.getPosition();
-        if ( pos.y < 70 || ( pos.x == playerPos.x && pos.y == playerPos.y ))
+        if ( bananaPos.y < 70 || this.closeTo( bananaPos , playerPos ))
             return true ;
         else
             return false ;
     }
-})
+});
 
 

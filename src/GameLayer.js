@@ -42,10 +42,20 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     end: function(){
-        if ( this.playerHP.HP <= 0 || this.enemyHP.HP <= 0 ){
-            this.stop();      
-            this.states = GameLayer.STATES.DEAD ;
-        }
+        if ( Math.round(this.playerHP.HP) <= 0 )    
+            this.showEndPage( GameLayer.CHARACTER.Enemy );
+        else if ( Math.round(this.enemyHP.HP) <= 0 )
+            this.showEndPage( GameLayer.CHARACTER.Player );
+        
+    },
+    
+    showEndPage: function( winner ){
+        this.states = GameLayer.STATES.DEAD ;
+        if ( winner == GameLayer.CHARACTER.Enemy )    
+            this.endPage = new Loser ();
+        else
+            this.endPage = new Winner();
+        this.addChild( this.endPage , 3 );
     },
     
     keepBullet: function(){
@@ -79,17 +89,13 @@ var GameLayer = cc.LayerColor.extend({
 
     fireBullet: function(){ 
         if( this.canfire() ){
-            for ( var i = 0 ; i < this.currentNumBullet  ; i++ ){
-                if( this.currentNumBullet == i+1 ){
-                    this.bullet[i+3].fire( this.player );
-                }
-            }
+            this.currentNumBullet -- ;   
+            this.bullet[ this.currentNumBullet + 3 ].fire( this.player );
         }
     },
     
     canfire: function(){
         if( this.currentNumBullet > 0  && this.states == GameLayer.STATES.STARTED ){
-            this.currentNumBullet -- ;    
             this.showStockOfBullet();
             return true ;
          }
@@ -106,6 +112,7 @@ var GameLayer = cc.LayerColor.extend({
     hitObstacle: function(){
         for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
             if ( this.closeTo ( this.obstacle[i] , this.player )){
+                this.showBlastEff( this.obstacle[i] );
                 this.playerHP.decreaseHP( 1 );
             }
         }
@@ -114,10 +121,17 @@ var GameLayer = cc.LayerColor.extend({
     hitEnemy: function(){
         for ( var i = 3 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++ ){
             if( this.closeTo ( this.bullet[i] , this.enemy )){
+                this.showBlastEff( this.bullet[i] );
                 this.enemyHP.decreaseHP( -1 );
                 this.speedUp();
+                this.bullet[i].hitEnemy();
             }
         }
+    },
+    
+    showBlastEff: function( obstacle ){
+        var obsPos = obstacle.getPosition();
+        this.blastEff.setPosition ( obsPos.x , obsPos.y );
     },
     
     speedUp: function(){
@@ -141,6 +155,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createBullet();
         this.createBlood();
         this.createBunchOfBullet();
+        this.createBlastEff();
     },
     
     createBG: function(){
@@ -158,6 +173,11 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy = new Enemy ();
         this.addChild( this.enemy , 2 );
         this.enemy.scheduleUpdate();
+    },
+    
+    createBlastEff: function(){
+        this.blastEff = new BlastEff ();
+        this.addChild( this.blastEff , 2 );
     },
     
     createBunchOfBullet: function(){
@@ -238,6 +258,11 @@ GameLayer.AMOUNTOF = {
     Excrement : 2 ,
     Obstacle : 5 ,
     Bullet : 3 
+};
+
+GameLayer.CHARACTER = {
+    Player: 1 ,
+    Enemy: 2
 };
 
 var StartScene = cc.Scene.extend({

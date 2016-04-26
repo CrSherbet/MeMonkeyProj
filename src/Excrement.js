@@ -25,10 +25,15 @@ var Excrement = cc.Sprite.extend({
             this.speed -= 0.001 ;
     },
     
+     closeTo: function( excrementPos , playerPos ) {
+  	    return ( ( Math.abs( playerPos.x - excrementPos.x ) <= 55 ) &&
+		 ( Math.abs( playerPos.y - excrementPos.y ) <= 55 ) );
+    },
+    
     checkCollision: function( player ){
-        var pos = this.getPosition();
+        var excrementPos = this.getPosition();
         var playerPos = player.getPosition();
-        if ( pos.y < 70 || ( pos.x == playerPos.x && pos.y == playerPos.y ))
+        if ( excrementPos.y < 70 || this.closeTo( excrementPos , playerPos ))
             return true ;
         else
             return false ;

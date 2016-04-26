@@ -20,7 +20,7 @@ var Enemy = cc.Sprite.extend({
     
     speedUp: function(){
         if(this.speed < 3 )
-            this.speed += 0.03 ;
+            this.speed += 0.05 ;
     },
     
     changeDirection: function(){

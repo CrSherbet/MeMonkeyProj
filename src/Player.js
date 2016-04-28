@@ -2,7 +2,7 @@ var Player = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/tiger.png' ) ;
-        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) ) ;
+        this.setInitialPosition();
         this.dirMove = "" ;
         this.xVelocity = 0 ;
         this.yVelocity = 0 ;
@@ -48,6 +48,10 @@ var Player = cc.Sprite.extend({
         if ( this.getPositionY() <= 230 && this.getPositionY() >= 120 ){
              this.yVelocity = Player.JUMP_VELOCITY ; 
         }
+    },
+    
+    setInitialPosition: function(){
+        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) ) ;
     }
 });
 

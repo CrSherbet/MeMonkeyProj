@@ -36,33 +36,33 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
     
-    removeElement: function(){
-        this.removeBanana();
-        this.removeObstacle();
-        this.removeChild( this.bg );
-        this.removeChild( this.player );
-        this.removeChild( this.enemy );
-        this.removeChild( this.playerHP );
-        this.removeChild( this.enemyHP );
-        this.removeChild( this.blastEff );
-        this.removeChild( this.bunchOfBullet );
+    setInitialValue: function(){
+        this.setInitBullet();
+        this.setInitObstacle();
+        this.player.setInitialPosition();
+        this.enemy.setInitialPosition();
+        this.playerHP.setInitialValue();
+        this.enemyHP.setInitialValue();
     },
     
-    removeBanana: function(){
-        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Banana ; i++ ){
-           this.removeChild( this.bullet[i] );
+    setInitBullet: function(){
+        for( var i = 3 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++){
+            this.bullet[i].hide();
         }
+        this.bunchOfBullet.setDefault();
     },
     
-    removeObstacle: function(){
-        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
-           this.removeChild( this.obstacle[i] );
+    setInitObstacle: function(){
+        for( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++){
+            this.obstacle[i].setInitialPosition();
         }
     },
                                      
     restart: function(){
-        this.removeElement();
-        this.init();
+        this.setInitialValue();
+        this.currentNumBullet = GameLayer.AMOUNTOF.Bullet ;
+        this.states = GameLayer.STATES.FRONT ;
+        this.enemy.changeStates();
     },
     
     end: function(){
@@ -84,7 +84,7 @@ var GameLayer = cc.LayerColor.extend({
     
     keepBullet: function(){
         if( this.currentNumBullet == 3 ){
-            this.bunchOfBullet.disappear();
+            this.bunchOfBullet.setDefault();
         } else {
             this.bunchOfBullet.appear();
             this.canKeepBullet();
@@ -106,6 +106,8 @@ var GameLayer = cc.LayerColor.extend({
                 this.bullet[i].showBullet( i+1 );
                 this.bullet[i].firing = false ;
             }
+            else
+                this.bullet[i].hide();
         }
      },
 
@@ -120,7 +122,7 @@ var GameLayer = cc.LayerColor.extend({
         if( this.currentNumBullet > 0  && this.states == GameLayer.STATES.STARTED ){
             this.showStockOfBullet();
             return true ;
-         }
+        }
         return false ;
     },
     
@@ -212,10 +214,7 @@ var GameLayer = cc.LayerColor.extend({
     
     createObstacle: function(){
         for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
-            if ( i < GameLayer.AMOUNTOF.Banana )
-                this.obstacle.push( new Banana ( 0.12 - Math.random()/10 ) );
-            else
-                this.obstacle.push( new Excrement ( 0.12 - Math.random()/10 ) );
+            this.obstacle.push( new Obstacle ( 0.12 - Math.random() / 10 ) );
             this.addChild( this.obstacle[i] , 1 );
             this.obstacle[i].scheduleUpdate();
         }

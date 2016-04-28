@@ -2,7 +2,7 @@ var Enemy = cc.Sprite.extend({
     ctor: function() {
         this._super();
         this.initWithFile( 'res/images/monkey.png' );
-        this.setPosition( new cc.Point( Math.random() * 700 + 50 , screenHeight - 120 ) );
+        this.setInitialPosition();
         this.direction = Enemy.DIRECTION.LEFT ;
         this.states = Enemy.STATES.FRONT ;
         this.speed = 1 ;
@@ -16,6 +16,8 @@ var Enemy = cc.Sprite.extend({
     changeStates: function(){
         if( this.states == Enemy.STATES.FRONT )
             this.states = Enemy.STATES.STARTED ;
+        else if( this.states == Enemy.STATES.STARTED )
+            this.states = Enemy.STATES.FRONT ;
     },
     
     speedUp: function(){
@@ -30,6 +32,10 @@ var Enemy = cc.Sprite.extend({
         else if ( pos.x < 50 )
             this.direction = Enemy.DIRECTION.RIGHT ;
         this.setPosition( new cc.Point( pos.x + this.direction * this.speed , pos.y ));
+    },
+    
+    setInitialPosition: function(){
+        this.setPosition( new cc.Point( Math.random() * 700 + 50 , screenHeight - 120 ) );
     }
 });
 

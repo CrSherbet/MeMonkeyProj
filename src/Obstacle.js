@@ -1,7 +1,7 @@
-var Banana = cc.Sprite.extend({
+var Obstacle = cc.Sprite.extend({
     ctor: function( speed ){
     this._super();
-    this.initWithFile( 'res/images/banana.png' );
+    this.randomObstacle();
     this.velocity = 0;
     this.speed = - speed ;
     },
@@ -11,6 +11,17 @@ var Banana = cc.Sprite.extend({
         this.setPosition( new cc.Point ( pos.x , pos.y + this.velocity ));
         this.velocity += this.speed ;
             
+    },
+    
+    setInitialPosition: function(){
+        this.setPosition( new cc.Point( -15 , -15 ) );
+    },
+    
+    randomObstacle: function(){
+        if( Math.round( Math.random() * 10 ) > 4 )
+            this.initWithFile( 'res/images/banana.png' );
+        else
+            this.initWithFile( 'res/images/excrement.png' );
     },
     
     leave: function( enemy ){
@@ -25,15 +36,15 @@ var Banana = cc.Sprite.extend({
             this.speed -= 0.001 ;
     },
     
-    closeTo: function( bananaPos , playerPos ) {
-  	    return ( ( Math.abs( playerPos.x - bananaPos.x ) <= 55 ) &&
-		 ( Math.abs( playerPos.y - bananaPos.y ) <= 55 ) );
+    closeTo: function( obstaclePos , playerPos ) {
+  	    return ( ( Math.abs( playerPos.x - obstaclePos.x ) <= 55 ) &&
+		 ( Math.abs( playerPos.y - obstaclePos.y ) <= 55 ) );
     },
     
     checkCollision: function( player ){
-        var bananaPos = this.getPosition();
+        var obstaclePos = this.getPosition();
         var playerPos = player.getPosition();
-        if ( bananaPos.y < 70 || this.closeTo( bananaPos , playerPos ))
+        if ( obstaclePos.y < 70 || this.closeTo( obstaclePos , playerPos ))
             return true ;
         else
             return false ;

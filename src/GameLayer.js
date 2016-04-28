@@ -36,9 +36,33 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
     
-    backToPlay: function(){
-        this.states = GameLayer.STATES.STARTED ;
-        this.setUpdate();
+    removeElement: function(){
+        this.removeBanana();
+        this.removeObstacle();
+        this.removeChild( this.bg );
+        this.removeChild( this.player );
+        this.removeChild( this.enemy );
+        this.removeChild( this.playerHP );
+        this.removeChild( this.enemyHP );
+        this.removeChild( this.blastEff );
+        this.removeChild( this.bunchOfBullet );
+    },
+    
+    removeBanana: function(){
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Banana ; i++ ){
+           this.removeChild( this.bullet[i] );
+        }
+    },
+    
+    removeObstacle: function(){
+        for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
+           this.removeChild( this.obstacle[i] );
+        }
+    },
+                                     
+    restart: function(){
+        this.removeElement();
+        this.init();
     },
     
     end: function(){
@@ -82,8 +106,6 @@ var GameLayer = cc.LayerColor.extend({
                 this.bullet[i].showBullet( i+1 );
                 this.bullet[i].firing = false ;
             }
-            else
-                this.bullet[i].decreaseStock();
         }
      },
 
@@ -124,12 +146,13 @@ var GameLayer = cc.LayerColor.extend({
                 this.showBlastEff( this.bullet[i] );
                 this.enemyHP.decreaseHP( -1 );
                 this.speedUp();
-                this.bullet[i].hitEnemy();
+                this.bullet[i].hide();
             }
         }
     },
     
     showBlastEff: function( obstacle ){
+        this.blastEff.time = 20 ;
         var obsPos = obstacle.getPosition();
         this.blastEff.setPosition ( obsPos.x , obsPos.y );
     },
@@ -178,6 +201,7 @@ var GameLayer = cc.LayerColor.extend({
     createBlastEff: function(){
         this.blastEff = new BlastEff ();
         this.addChild( this.blastEff , 2 );
+        this.blastEff.scheduleUpdate();
     },
     
     createBunchOfBullet: function(){
@@ -231,19 +255,23 @@ var GameLayer = cc.LayerColor.extend({
             this.gameStart();
         if ( keyCode == 37 )
             this.player.moveLeft();
-        else if ( keyCode == 39)
+        else if ( keyCode == 39 )
             this.player.moveRight();
-        else if ( keyCode == 32)
+        else if ( keyCode == 32 )
             this.player.jump();
-        else if ( keyCode == 67)
+        else if ( keyCode == 67 )
             this.fireBullet();
-        else if ( keyCode == 80)
+        else if ( keyCode == 80 )
             this.pause();
+        else if ( keyCode == 78 )
+            this.restart();
+
     },
     
     onKeyUp: function( keyCode, event ) {
 
     } 
+                                     
 })
 
 GameLayer.STATES = {
@@ -268,8 +296,11 @@ GameLayer.CHARACTER = {
 var StartScene = cc.Scene.extend({
     onEnter:function () {
         this._super();
+        cc.director.setDisplayStats(false);
         var layer = new GameLayer();
         layer.init();
         this.addChild(layer);
+        layer.scheduleUpdate();
+
     }
 });

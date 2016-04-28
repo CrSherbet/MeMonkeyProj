@@ -23,7 +23,6 @@
         "src/Bullet.js",
         "src/Blood.js",
         "src/BlastEff.js",
-        "src/Winner.js",
-        "src/Loser.js"
+        "src/EndPage.js"
     ]
 }

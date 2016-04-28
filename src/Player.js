@@ -1,11 +1,11 @@
 var Player = cc.Sprite.extend({
     ctor: function() {
         this._super();
-        this.initWithFile( 'res/images/tiger.png' );
-        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) );
+        this.initWithFile( 'res/images/tiger.png' ) ;
+        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) ) ;
         this.dirMove = "" ;
-        this.xVelocity = 0;
-        this.yVelocity = 0;
+        this.xVelocity = 0 ;
+        this.yVelocity = 0 ;
     },
     
     update: function( dt ){
@@ -17,18 +17,18 @@ var Player = cc.Sprite.extend({
     },
     
     calGavity: function (){
-        var pos = this.getPosition();
+        var pos = this.getPosition() ;
         if( pos.y + this.yVelocity > 120 )
             this.yVelocity += Player.G ;
         else 
-            this.yVelocity = 0;
+            this.yVelocity = 0 ;
     },
     
     calFiction: function (){
         var pos = this.getPosition();
-        if (this.dirMove ==  "right" && this.xVelocity > 0)
+        if ( this.dirMove ==  "right" && this.xVelocity > 0 )
             this.xVelocity -= 0.5;
-        else if (this.dirMove ==  "left" && this.xVelocity < 0)
+        else if ( this.dirMove ==  "left" && this.xVelocity < 0 )
             this.xVelocity += 0.5;
         if( pos.x + this.xVelocity > screenWidth - 50  || pos.x + this.xVelocity < 50 )
             this.xVelocity = 0;

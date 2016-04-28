@@ -23,21 +23,17 @@ var Bullet = cc.Sprite.extend({
         else if ( this.numOfBullet == 3 )
             this.setPosition( new cc.Point( 775 , 35 ));
         else 
-            this.setPosition( new cc.Point( -15 , -15 ));
+            this.hide();
     },
     
-    decreaseStock: function(){
+    hide: function(){
         this.setPosition( new cc.Point ( -15 , -15 ));    
     },
     
     hitBorder: function( pos ){
         if( pos.y + 5 >= screenHeight ){
-                this.setPosition( new cc.Point ( -15 , -15 ));
+            this.hide();
         }
-    },
-    
-    hitEnemy: function(){
-         this.setPosition( new cc.Point ( -15 , -15 ));
     },
     
     fire: function( player ){

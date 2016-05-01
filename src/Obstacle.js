@@ -9,8 +9,7 @@ var Obstacle = cc.Sprite.extend({
     update: function( dt ){
         var pos = this.getPosition();
         this.setPosition( new cc.Point ( pos.x , pos.y + this.velocity ));
-        this.velocity += this.speed ;
-            
+        this.velocity += this.speed ;            
     },
     
     setInitialPosition: function(){
@@ -41,13 +40,10 @@ var Obstacle = cc.Sprite.extend({
 		 ( Math.abs( playerPos.y - obstaclePos.y ) <= 55 ) );
     },
     
-    checkCollision: function( player ){
-        var obstaclePos = this.getPosition();
-        var playerPos = player.getPosition();
-        if ( obstaclePos.y < 70 || this.closeTo( obstaclePos , playerPos ))
+    hitGround: function(){
+        if ( this.getPositionY() < 70 )
             return true ;
-        else
-            return false ;
+        return false ;
     }
 });
 

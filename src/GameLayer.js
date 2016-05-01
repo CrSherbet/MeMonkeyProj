@@ -13,7 +13,6 @@ var GameLayer = cc.LayerColor.extend({
     update: function(){
         if( this.states == GameLayer.STATES.STARTED ){
             this.keepBullet();     
-            this.hitGroundOrPlayer();
             this.hitEnemy();
             this.hitObstacle();
             this.end();
@@ -21,18 +20,22 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     gameStart: function(){ 
+        cc.audioEngine.playMusic('res/Sound/background.wav', true );
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
         this.createObstacle();  
+       
     },
     
     pause: function(){
         if ( this.states == GameLayer.STATES.STARTED ){
             this.states = GameLayer.STATES.PAUSED ;
             cc.director.pause();
+            cc.audioEngine.pauseMusic();
         } else {
             this.states = GameLayer.STATES.STARTED ;
             cc.director.resume();
+            cc.audioEngine.resumeMusic();
         }
     },
     
@@ -70,13 +73,14 @@ var GameLayer = cc.LayerColor.extend({
             this.showEndPage( GameLayer.CHARACTER.Enemy );
         else if ( Math.round(this.enemyHP.HP) <= 0 )
             this.showEndPage( GameLayer.CHARACTER.Player );
+        cc.audioEngine.stopAllEffects();
         
     },
     
     showEndPage: function( winner ){
         this.states = GameLayer.STATES.DEAD ;
         if ( winner == GameLayer.CHARACTER.Enemy )    
-            this.endPage = new Loser ();
+            this.endPage = new Loser();
         else
             this.endPage = new Winner();
         this.addChild( this.endPage , 3 );
@@ -138,7 +142,10 @@ var GameLayer = cc.LayerColor.extend({
             if ( this.closeTo ( this.obstacle[i] , this.player )){
                 this.showBlastEff( this.obstacle[i] );
                 this.playerHP.decreaseHP( 1 );
-            }
+                this.obstacle[i].leave( this.enemy );
+                cc.audioEngine.playEffect('res/Sound/hitObject.wav', true );
+            } else if ( this.obstacle[i].hitGround() )
+                this.obstacle[i].leave( this.enemy );
         }
     },
     
@@ -149,6 +156,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.enemyHP.decreaseHP( -1 );
                 this.speedUp();
                 this.bullet[i].hide();
+                cc.audioEngine.playEffect('res/Sound/hitObject.wav' , true );
             }
         }
     },
@@ -163,13 +171,6 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy.speedUp();
         for ( var i = 0 ; i < GameLayer.AMOUNTOF.Obstacle ; i++ ){
             this.obstacle[i].speedUp();
-        }
-    },
-    
-    hitGroundOrPlayer: function(){
-        for( var i = 0 ; i < this.obstacle.length ; i++ ){
-            if ( this.obstacle[i].checkCollision( this.player ) )
-                this.obstacle[i].leave( this.enemy );
         }
     },
     

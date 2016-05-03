@@ -1,7 +1,7 @@
 var Enemy = cc.Sprite.extend({
     ctor: function() {
         this._super();
-        this.initWithFile( 'res/images/monkey.png' );
+        this.initWithFile( res.Monkey_png );
         this.setInitialPosition();
         this.direction = Enemy.DIRECTION.LEFT ;
         this.states = Enemy.STATES.FRONT ;

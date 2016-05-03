@@ -6,7 +6,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createElement();
         this.states = GameLayer.STATES.FRONT;
         this.addKeyboardHandlers();
-        this.scheduleUpdate();
+        this.scheduleUpdate();       
 	return true;
     },
     
@@ -20,7 +20,7 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     gameStart: function(){ 
-        cc.audioEngine.playMusic('res/Sound/background.wav', true );
+        cc.audioEngine.playMusic( res.BackGroundSound , true );
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
         this.createObstacle();  
@@ -28,15 +28,11 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     pause: function(){
-        if ( this.states == GameLayer.STATES.STARTED ){
-            this.states = GameLayer.STATES.PAUSED ;
-            cc.director.pause();
-            cc.audioEngine.pauseMusic();
-        } else {
-            this.states = GameLayer.STATES.STARTED ;
-            cc.director.resume();
-            cc.audioEngine.resumeMusic();
-        }
+        this.states = GameLayer.STATES.PAUSED ;
+        cc.director.pause();
+        cc.audioEngine.pauseMusic();
+        this.createResumeButton();   
+        
     },
     
     setInitialValue: function(){
@@ -73,17 +69,17 @@ var GameLayer = cc.LayerColor.extend({
             this.showEndPage( GameLayer.CHARACTER.Enemy );
         else if ( Math.round(this.enemyHP.HP) <= 0 )
             this.showEndPage( GameLayer.CHARACTER.Player );
-        cc.audioEngine.stopAllEffects();
+        
         
     },
     
     showEndPage: function( winner ){
         this.states = GameLayer.STATES.DEAD ;
         if ( winner == GameLayer.CHARACTER.Enemy )    
-            this.endPage = new Loser();
+            cc.director.runScene(new Loser());
         else
-            this.endPage = new Winner();
-        this.addChild( this.endPage , 3 );
+            cc.director.runScene(new Winner());
+       // cc.audioEngine.stopAllEffects();
     },
     
     keepBullet: function(){
@@ -143,7 +139,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.showBlastEff( this.obstacle[i] );
                 this.playerHP.decreaseHP( 1 );
                 this.obstacle[i].leave( this.enemy );
-                cc.audioEngine.playEffect('res/Sound/hitObject.wav', true );
+                cc.audioEngine.playEffect( res.hitObjectSound );
             } else if ( this.obstacle[i].hitGround() )
                 this.obstacle[i].leave( this.enemy );
         }
@@ -156,7 +152,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.enemyHP.decreaseHP( -1 );
                 this.speedUp();
                 this.bullet[i].hide();
-                cc.audioEngine.playEffect('res/Sound/hitObject.wav' , true );
+                cc.audioEngine.playEffect( res.hitObjectSound );
             }
         }
     },
@@ -187,6 +183,7 @@ var GameLayer = cc.LayerColor.extend({
     createBG: function(){
         this.bg = new BG();
         this.addChild( this.bg , 1 );
+        cc.director.setDisplayStats(false);
     },
         
     createPlayer: function (){
@@ -237,6 +234,18 @@ var GameLayer = cc.LayerColor.extend({
         this.addChild( this.enemyHP );
     },
     
+    createResumeButton : function(){
+        this.resumeItem = new cc.MenuItemImage( res.ResumeAFTER , res.ResumeAFTER , function(){
+            this.states = GameLayer.STATES.STARTED ;
+            cc.director.resume();
+            cc.audioEngine.resumeMusic();
+        }, this);
+        this.resumeButton = new cc.Menu( this.resumeItem );
+        this.resumeButton.setPosition( Width / 2 - 50 , Height / 2);
+        this.addChild( this.resumeButton );
+     
+    },
+    
     addKeyboardHandlers: function() {
         var self = this;
         cc.eventManager.addListener({
@@ -272,7 +281,7 @@ var GameLayer = cc.LayerColor.extend({
 
     } 
                                      
-})
+});
 
 GameLayer.STATES = {
     FRONT : 1 ,
@@ -292,15 +301,3 @@ GameLayer.CHARACTER = {
     Player: 1 ,
     Enemy: 2
 };
-
-var StartScene = cc.Scene.extend({
-    onEnter:function () {
-        this._super();
-        cc.director.setDisplayStats(false);
-        var layer = new GameLayer();
-        layer.init();
-        this.addChild(layer);
-        layer.scheduleUpdate();
-
-    }
-});

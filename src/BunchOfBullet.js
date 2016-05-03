@@ -1,7 +1,7 @@
 var BunchOfBullet = cc.Sprite.extend({
     ctor: function() {
         this._super();
-        this.initWithFile( 'res/images/bunchOfBullet.png' );
+        this.initWithFile( res.BunchBullet_png );
         this.setDefault();
     },
     

@@ -1,7 +1,7 @@
 var Player = cc.Sprite.extend({
     ctor: function() {
         this._super();
-        this.initWithFile( 'res/images/tiger.png' ) ;
+        this.initWithFile( res.Tiger_png ) ;
         this.setInitialPosition();
         this.dirMove = "" ;
         this.xVelocity = 0 ;

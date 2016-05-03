@@ -18,9 +18,9 @@ var Obstacle = cc.Sprite.extend({
     
     randomObstacle: function(){
         if( Math.round( Math.random() * 10 ) > 4 )
-            this.initWithFile( 'res/images/banana.png' );
+            this.initWithFile( res.Banana_png );
         else
-            this.initWithFile( 'res/images/excrement.png' );
+            this.initWithFile( res.Excrement_png );
     },
     
     leave: function( enemy ){

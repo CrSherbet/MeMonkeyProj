@@ -22,6 +22,7 @@
         "src/Bullet.js",
         "src/Blood.js",
         "src/BlastEff.js",
-        "src/EndPage.js"
+        "src/EndPage.js",
+        "src/StartScene.js"
     ]
 }

@@ -16,7 +16,8 @@ var res = {
     ResumeBEFORE : 'res/images/resume1.png',
     ResumeAFTER : 'res/images/resume2.png',
     RestartBEFORE : 'res/images/restart1.png',
-    RestartAFTER : 'res/images/restart2.png'
+    RestartAFTER : 'res/images/restart2.png',
+    PressBar : 'res/images/pressBar.png'
 }
 var g_resources = [];
 for (var i in res) {

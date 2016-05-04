@@ -26,14 +26,17 @@ var GameLayer = cc.LayerColor.extend({
         cc.audioEngine.playMusic( res.BackGroundSound , true );
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
+        this.removeChild( this.pressBar );
     },
     
     pause: function(){
-        this.states = GameLayer.STATES.PAUSED ;
-        cc.director.pause();
-        cc.audioEngine.pauseMusic();
-        this.createResumeButton();   
-        this.createRestartButton( screenWidth / 2 + 100 , screenHeight / 2 +50 );
+        if ( this.states == GameLayer.STATES.STARTED ){
+            this.states = GameLayer.STATES.PAUSED ;
+            cc.director.pause();
+            cc.audioEngine.pauseMusic();
+            this.createResumeButton();   
+            this.createRestartButton( screenWidth / 2 + 100 , screenHeight / 2 );
+        }
     },
     
     setInitialValue: function(){
@@ -44,7 +47,8 @@ var GameLayer = cc.LayerColor.extend({
         this.enemy.setInitialPosition();
         this.playerHP.setInitialValue();
         this.enemyHP.setInitialValue();
-        this.blastEff.time = 0;
+        this.blastEff.hide();
+        this.showPressBar();
     },
     
     setInitBullet: function(){
@@ -148,7 +152,7 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     hitEnemy: function(){
-        for ( var i = 3 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++ ){
+        for ( var i = 3 ; i < GameLayer.AMOUNTOF.Bullet * 3 ; i++ ){
             if( this.closeTo ( this.bullet[i] , this.enemy )){
                 this.showBlastEff( this.bullet[i] );
                 this.enemyHP.decreaseHP( -1 );
@@ -186,7 +190,13 @@ var GameLayer = cc.LayerColor.extend({
     createBG: function(){
         this.bg = new BG();
         this.addChild( this.bg , 1 );
-        cc.director.setDisplayStats(false);
+        cc.director.setDisplayStats( false );
+        this.showPressBar();
+    },
+    
+    showPressBar: function(){
+        this.pressBar = new PressBar();
+        this.addChild( this.pressBar , 4 );
     },
         
     createPlayer: function (){
@@ -240,7 +250,7 @@ var GameLayer = cc.LayerColor.extend({
     createResumeButton : function(){
         this.resumeItem = new cc.MenuItemImage( res.ResumeBEFORE , res.ResumeAFTER , this.resumeAction , this);
         this.resumeButton = new cc.Menu( this.resumeItem );
-        this.resumeButton.setPosition( screenWidth / 2 - 100 , screenHeight / 2 +50 );
+        this.resumeButton.setPosition( screenWidth / 2 - 100 , screenHeight / 2 );
         this.addChild( this.resumeButton , 4);
     },
     

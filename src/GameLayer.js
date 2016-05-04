@@ -11,7 +11,9 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     update: function(){
-        if( this.states == GameLayer.STATES.STARTED ){
+        if ( this.states == GameLayer.STATES.FRONT )
+            cc.director.pause() ;
+        else if( this.states == GameLayer.STATES.STARTED ){
             this.keepBullet();     
             this.hitEnemy();
             this.hitObstacle();
@@ -20,11 +22,10 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     gameStart: function(){ 
+        cc.director.resume() ;
         cc.audioEngine.playMusic( res.BackGroundSound , true );
         this.states = GameLayer.STATES.STARTED; 
         this.enemy.changeStates();
-        this.createObstacle();  
-       
     },
     
     pause: function(){
@@ -32,16 +33,18 @@ var GameLayer = cc.LayerColor.extend({
         cc.director.pause();
         cc.audioEngine.pauseMusic();
         this.createResumeButton();   
-        
+        this.createRestartButton( screenWidth / 2 + 100 , screenHeight / 2 +50 );
     },
     
     setInitialValue: function(){
         this.setInitBullet();
         this.setInitObstacle();
+        this.enemy.changeStates();
         this.player.setInitialPosition();
         this.enemy.setInitialPosition();
         this.playerHP.setInitialValue();
         this.enemyHP.setInitialValue();
+        this.blastEff.time = 0;
     },
     
     setInitBullet: function(){
@@ -57,29 +60,21 @@ var GameLayer = cc.LayerColor.extend({
         }
     },
                                      
-    restart: function(){
-        this.setInitialValue();
-        this.currentNumBullet = GameLayer.AMOUNTOF.Bullet ;
-        this.states = GameLayer.STATES.FRONT ;
-        this.enemy.changeStates();
-    },
-    
     end: function(){
         if ( Math.round(this.playerHP.HP) <= 0 )    
             this.showEndPage( GameLayer.CHARACTER.Enemy );
         else if ( Math.round(this.enemyHP.HP) <= 0 )
             this.showEndPage( GameLayer.CHARACTER.Player );
-        
-        
     },
     
     showEndPage: function( winner ){
         this.states = GameLayer.STATES.DEAD ;
         if ( winner == GameLayer.CHARACTER.Enemy )    
-            cc.director.runScene(new Loser());
+            this.endPage = new Loser ();
         else
-            cc.director.runScene(new Winner());
-       // cc.audioEngine.stopAllEffects();
+            this.endPage = new Winner();
+        this.addChild( this.endPage , 3 );
+        this.createRestartButton( screenWidth - 100 , 100 );
     },
     
     keepBullet: function(){
@@ -114,7 +109,14 @@ var GameLayer = cc.LayerColor.extend({
     fireBullet: function(){ 
         if( this.canfire() ){
             this.currentNumBullet -- ;   
-            this.bullet[ this.currentNumBullet + 3 ].fire( this.player );
+            this.bullet[ this.findAvBullet() ].fire( this.player );
+        }
+    },
+    
+    findAvBullet: function(){
+        for( i = GameLayer.AMOUNTOF.Bullet ; i< this.bullet.length ; i++ ){
+            if( this.bullet[i].firing == false )
+                return i ;
         }
     },
     
@@ -178,6 +180,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createBlood();
         this.createBunchOfBullet();
         this.createBlastEff();
+        this.createObstacle();  
     },
     
     createBG: function(){
@@ -219,7 +222,7 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     createBullet: function(){
-       for (var i = 0 ; i < GameLayer.AMOUNTOF.Bullet * 2 ; i++){
+       for (var i = 0 ; i < GameLayer.AMOUNTOF.Bullet * 3 ; i++){
             this.bullet.push( new Bullet ( i+1 ) );
             this.addChild( this.bullet[i] , 1 );
             this.bullet[i].scheduleUpdate();
@@ -235,15 +238,35 @@ var GameLayer = cc.LayerColor.extend({
     },
     
     createResumeButton : function(){
-        this.resumeItem = new cc.MenuItemImage( res.ResumeAFTER , res.ResumeAFTER , function(){
-            this.states = GameLayer.STATES.STARTED ;
-            cc.director.resume();
-            cc.audioEngine.resumeMusic();
-        }, this);
+        this.resumeItem = new cc.MenuItemImage( res.ResumeBEFORE , res.ResumeAFTER , this.resumeAction , this);
         this.resumeButton = new cc.Menu( this.resumeItem );
-        this.resumeButton.setPosition( Width / 2 - 50 , Height / 2);
-        this.addChild( this.resumeButton );
-     
+        this.resumeButton.setPosition( screenWidth / 2 - 100 , screenHeight / 2 +50 );
+        this.addChild( this.resumeButton , 4);
+    },
+    
+    resumeAction: function(){
+        this.states = GameLayer.STATES.STARTED ;
+        cc.director.resume();
+        cc.audioEngine.resumeMusic();
+        this.removeChild( this.resumeButton );
+        this.removeChild( this.restartButton );
+    },
+    
+    createRestartButton : function( posX , posY ){
+        this.restartItem = new cc.MenuItemImage( res.RestartBEFORE , res.RestartAFTER , this.restartAction , this);
+        this.restartButton = new cc.Menu( this.restartItem );
+        this.restartButton.setPosition( posX , posY );
+        this.addChild( this.restartButton , 4);
+    },
+    
+    restartAction: function(){
+        cc.audioEngine.stopMusic();
+        this.states = GameLayer.STATES.FRONT ;
+        this.setInitialValue();
+        this.currentNumBullet = GameLayer.AMOUNTOF.Bullet ;
+        this.removeChild( this.resumeButton );
+        this.removeChild( this.restartButton ); 
+        this.removeChild( this.endPage );
     },
     
     addKeyboardHandlers: function() {
@@ -272,9 +295,6 @@ var GameLayer = cc.LayerColor.extend({
             this.fireBullet();
         else if ( keyCode == 80 )
             this.pause();
-        else if ( keyCode == 78 )
-            this.restart();
-
     },
     
     onKeyUp: function( keyCode, event ) {

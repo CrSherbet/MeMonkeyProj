@@ -1,6 +1,7 @@
 var Obstacle = cc.Sprite.extend({
     ctor: function( speed ){
     this._super();
+    this.setInitialPosition();
     this.randomObstacle();
     this.velocity = 0;
     this.speed = - speed ;
@@ -8,12 +9,13 @@ var Obstacle = cc.Sprite.extend({
     
     update: function( dt ){
         var pos = this.getPosition();
-        this.setPosition( new cc.Point ( pos.x , pos.y + this.velocity ));
+        this.setPosition( pos.x , pos.y + this.velocity );
         this.velocity += this.speed ;            
     },
     
     setInitialPosition: function(){
-        this.setPosition( new cc.Point( -15 , -15 ) );
+        this.setPosition( -20 , -20 );
+        this.speed = - (0.12 - Math.random() / 10);
     },
     
     randomObstacle: function(){
@@ -25,14 +27,14 @@ var Obstacle = cc.Sprite.extend({
     
     leave: function( enemy ){
         var posXEnemy = enemy.getPositionX();
-        this.setPosition( new cc.Point ( posXEnemy , screenHeight - 135));
+        this.setPosition( posXEnemy , screenHeight - 135 );
         this.velocity = 0;
        
     },
     
     speedUp: function(){
         if ( this.speed > - 0.2 )
-            this.speed -= 0.001 ;
+            this.speed -= 0.003 ;
     },
     
     closeTo: function( obstaclePos , playerPos ) {

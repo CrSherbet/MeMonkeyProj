@@ -10,7 +10,7 @@ var Bullet = cc.Sprite.extend({
     update: function( dt ){
         if(this.firing){
             var pos = this.getPosition();
-            this.setPosition( new cc.Point ( pos.x , pos.y + 5 ));
+            this.setPosition( pos.x , pos.y + 5 );
             this.hitBorder( pos );
         }        
     },
@@ -27,7 +27,8 @@ var Bullet = cc.Sprite.extend({
     },
     
     hide: function(){
-        this.setPosition( new cc.Point ( -15 , -15 ));    
+        this.setPosition( -15 , -15 ); 
+        this.firing = false ;
     },
     
     hitBorder: function( pos ){
@@ -39,6 +40,6 @@ var Bullet = cc.Sprite.extend({
     fire: function( player ){
         this.firing = true ;
         var posPlayer = player.getPosition();
-        this.setPosition( new cc.Point ( posPlayer.x , posPlayer.y ));
+        this.setPosition( posPlayer.x , posPlayer.y );
     }
 })

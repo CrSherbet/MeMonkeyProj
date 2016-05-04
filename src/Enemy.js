@@ -22,7 +22,7 @@ var Enemy = cc.Sprite.extend({
     
     speedUp: function(){
         if(this.speed < 3 )
-            this.speed += 0.05 ;
+            this.speed += 0.06 ;
     },
     
     changeDirection: function(){
@@ -31,11 +31,12 @@ var Enemy = cc.Sprite.extend({
             this.direction = Enemy.DIRECTION.LEFT ;
         else if ( pos.x < 50 )
             this.direction = Enemy.DIRECTION.RIGHT ;
-        this.setPosition( new cc.Point( pos.x + this.direction * this.speed , pos.y ));
+        this.setPosition( pos.x + this.direction * this.speed , pos.y );
     },
     
     setInitialPosition: function(){
         this.setPosition( new cc.Point( Math.random() * 700 + 50 , screenHeight - 120 ) );
+        this.speed = 1 ;
     }
 });
 

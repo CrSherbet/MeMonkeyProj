@@ -8,11 +8,11 @@ var BunchOfBullet = cc.Sprite.extend({
     randomPos: function(){
         var x = Math.random() * 700 ;
         var y = Math.random() * 280 ;
-        this.setPosition( new cc.Point( x + 70 , y + 70 ));
+        this.setPosition( x + 70 , y + 70 );
     },
     
     setDefault: function(){
-        this.setPosition( new cc.Point( -15, -15 ));
+        this.setPosition( -15, -15 );
         this.status = false ;
     },
     

@@ -12,7 +12,7 @@ var Player = cc.Sprite.extend({
         var pos = this.getPosition();
         this.calGavity();
         this.calFiction();
-        this.setPosition( new cc.Point( pos.x + this.xVelocity , pos.y + this.yVelocity ) );
+        this.setPosition( pos.x + this.xVelocity , pos.y + this.yVelocity );
        
     },
     
@@ -51,7 +51,7 @@ var Player = cc.Sprite.extend({
     },
     
     setInitialPosition: function(){
-        this.setPosition( new cc.Point( screenWidth / 2 , 120 ) ) ;
+        this.setPosition( screenWidth / 2 , 120 ) ;
     }
 });
 

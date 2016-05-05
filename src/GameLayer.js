@@ -88,8 +88,7 @@ var GameLayer = cc.LayerColor.extend({
             this.bunchOfBullet.appear();
             this.canKeepBullet();
         }
-        this.showStockOfBullet();
-            
+        this.showStockOfBullet();    
     },
 
     canKeepBullet: function(){
@@ -145,7 +144,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.showBlastEff( this.obstacle[i] );
                 this.playerHP.decreaseHP( 1 );
                 this.obstacle[i].leave( this.enemy );
-                cc.audioEngine.playEffect( res.hitObjectSound );
+                cc.audioEngine.playEffect( res.HitObjectSound );
             } else if ( this.obstacle[i].hitGround() )
                 this.obstacle[i].leave( this.enemy );
         }
@@ -158,7 +157,7 @@ var GameLayer = cc.LayerColor.extend({
                 this.enemyHP.decreaseHP( -1 );
                 this.speedUp();
                 this.bullet[i].hide();
-                cc.audioEngine.playEffect( res.hitObjectSound );
+                cc.audioEngine.playEffect( res.HitObjectSound );
             }
         }
     },
@@ -260,6 +259,7 @@ var GameLayer = cc.LayerColor.extend({
         cc.audioEngine.resumeMusic();
         this.removeChild( this.resumeButton );
         this.removeChild( this.restartButton );
+        cc.audioEngine.playEffect( res.ClickSound );
     },
     
     createRestartButton : function( posX , posY ){
@@ -277,6 +277,7 @@ var GameLayer = cc.LayerColor.extend({
         this.removeChild( this.resumeButton );
         this.removeChild( this.restartButton ); 
         this.removeChild( this.endPage );
+        cc.audioEngine.playEffect( res.ClickSound );
     },
     
     addKeyboardHandlers: function() {

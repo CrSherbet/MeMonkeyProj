@@ -14,7 +14,7 @@
     "jsList" : [
         "src/resource.js",
         "src/GameLayer.js",
-        "src/BG.js",
+        "src/Page.js",
         "src/Enemy.js",
         "src/Player.js",
         "src/BunchOfBullet.js",
@@ -22,7 +22,6 @@
         "src/Bullet.js",
         "src/Blood.js",
         "src/BlastEff.js",
-        "src/EndPage.js",
         "src/StartScene.js"
     ]
 }

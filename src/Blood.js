@@ -19,5 +19,9 @@ var Blood = cc.Sprite.extend({
     setInitialValue: function(){
         this.setPosition( this.posX , 38.5 );
         this.HP = 100 ;
+    },
+
+    testBugspot: function(){
+        console.log('jjkljk')
     }
 });

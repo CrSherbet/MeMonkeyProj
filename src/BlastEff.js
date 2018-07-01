@@ -15,5 +15,6 @@ var BlastEff = cc.Sprite.extend({
     
     hide: function(){
          this.setPosition( -15 , -15 );
+         console.log(test);
     }
 });
